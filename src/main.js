@@ -422,3 +422,19 @@ const renderComponent = (node, markup) => {
   node.insertAdjacentHTML(`beforeend`, markup);
 };
 
+const mainNode = document.querySelector(`main`);
+const mainControl = mainNode.querySelector(`.control`);
+
+renderComponent(mainControl, templates.getMenu());
+renderComponent(mainNode, templates.getSearch());
+renderComponent(mainNode, templates.getFilters());
+renderComponent(mainNode, templates.getTasksBoard());
+
+const board = mainNode.querySelector(`.board`);
+const tasksBoard = board.querySelector(`.board__tasks`);
+
+renderComponent(tasksBoard, templates.getCardForm(`yellow`));
+renderComponent(tasksBoard, templates.getTaskCard(`black`));
+renderComponent(tasksBoard, templates.getTaskCard(`blue`));
+renderComponent(tasksBoard, templates.getTaskCard(`yellow`));
+renderComponent(board, templates.getLoadButton());
