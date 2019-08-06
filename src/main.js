@@ -1,3 +1,5 @@
+'use strict';
+
 const templates = {
   getMenu: () =>
     `<section class="control__btn-wrap">
@@ -415,3 +417,8 @@ const templates = {
   getLoadButton: () =>
     `<button class="load-more" type="button">load more</button>`
 };
+
+const renderComponent = (node, markup) => {
+  node.insertAdjacentHTML(`beforeend`, markup);
+};
+
