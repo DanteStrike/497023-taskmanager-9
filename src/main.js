@@ -6,21 +6,25 @@ import {createBoardFilter} from './components/board-filter.js';
 import {createTaskCard} from './components/task.js';
 import {createTaskEditForm} from './components/task-edit.js';
 import {createLoadMoreButton} from './components/load-more-button.js';
+
+const renderComponent = (node, markup, position = `beforeend`) => {
+  node.insertAdjacentHTML(position, markup);
 };
 
 const mainNode = document.querySelector(`main`);
 const mainControl = mainNode.querySelector(`.control`);
 
-renderComponent(mainControl, templates.getMenu());
-renderComponent(mainNode, templates.getSearch());
-renderComponent(mainNode, templates.getFilters());
-renderComponent(mainNode, templates.getTasksBoard());
+renderComponent(mainControl, getMenuTemplate());
+renderComponent(mainNode, getSearchTemplate());
+renderComponent(mainNode, createFiltersTemplate());
+renderComponent(mainNode, createTasksBoard());
 
 const board = mainNode.querySelector(`.board`);
 const tasksBoard = board.querySelector(`.board__tasks`);
 
-renderComponent(tasksBoard, templates.getCardForm(`yellow`));
-renderComponent(tasksBoard, templates.getTaskCard(`black`));
-renderComponent(tasksBoard, templates.getTaskCard(`blue`));
-renderComponent(tasksBoard, templates.getTaskCard(`yellow`));
-renderComponent(board, templates.getLoadButton());
+renderComponent(board, createBoardFilter(), `afterbegin`);
+renderComponent(tasksBoard, createTaskEditForm(`yellow`));
+
+[`black`, `blue`, `yellow`].map((color) => renderComponent(tasksBoard, createTaskCard(color)));
+
+renderComponent(board, createLoadMoreButton());
