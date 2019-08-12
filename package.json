@@ -4,12 +4,20 @@
   "private": true,
   "description": "Учебный проект «Менеджер задач» от HTML Academy",
   "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server --open",
     "eslint": "eslint src/**/*.js",
     "test": "npm run eslint"
   },
   "devDependencies": {
     "eslint": "6.1.0",
-    "eslint-config-htmlacademy": "0.5.2"
+    "eslint-config-htmlacademy": "0.5.2",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-loader": "^8.0.5"
   },
   "engines": {
     "node": "10"
