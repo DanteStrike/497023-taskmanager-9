@@ -1,3 +1,8 @@
+const MINUTES_IN_DAY = 60;
+const HOURS_IN_DAY = 24;
+const MILLISECONDS_IN_MINUTE = 1000 * 60;
+const MILLISECONDS_IN_HOUR = 1000 * 60 * 60;
+const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
 /**
  * Возвращает случайный элемент любого массивоподобного объекта.
  *
