@@ -25,13 +25,12 @@ const board = mainNode.querySelector(`.board`);
 const tasksBoard = board.querySelector(`.board__tasks`);
 
 renderComponent(board, createBoardFilter(), `afterbegin`);
-renderComponent(tasksBoard, createTaskEditForm(`yellow`));
 
-[`black`, `blue`, `yellow`].map((color) => renderComponent(tasksBoard, createTaskCard(color)));
 //  Рендер первого набора задач
 let editTaskData;
 let firstInitTaskData;
 [editTaskData, ...firstInitTaskData] = tasksData.slice(0, TASKS_PER_LOAD);
+renderComponent(tasksBoard, createTaskEditForm(editTaskData));
 renderComponent(tasksBoard, firstInitTaskData.map(createTaskCard).join(``));
 
 renderComponent(board, createLoadMoreButton());
