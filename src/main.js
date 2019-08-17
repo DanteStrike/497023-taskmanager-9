@@ -7,6 +7,8 @@ import {createTaskCard} from './components/task.js';
 import {createTaskEditForm} from './components/task-edit.js';
 import {createLoadMoreButton} from './components/load-more-button.js';
 import {tasksData} from './data.js';
+import {filtersData} from './data.js';
+
 
 const TASKS_PER_LOAD = 8;
 const renderComponent = (node, markup, position = `beforeend`) => {
@@ -18,7 +20,9 @@ const mainControl = mainNode.querySelector(`.control`);
 
 renderComponent(mainControl, getMenuTemplate());
 renderComponent(mainNode, getSearchTemplate());
-renderComponent(mainNode, createFiltersTemplate());
+renderComponent(mainNode, createFiltersTemplate(filtersData));
+
+//  Рендер доски задач и его фильтров
 renderComponent(mainNode, createTasksBoard());
 
 const board = mainNode.querySelector(`.board`);
