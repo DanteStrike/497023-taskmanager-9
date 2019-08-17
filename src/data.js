@@ -15,6 +15,7 @@ const TAGS_COUNT = {
 const AVAILABLE_TAGS = new Set([`homework`, `theory`, `practice`, `intensive`, `keks`, `flex`, `JS`]);
 const AVAILABLE_COLORS = new Set([`black`, `yellow`, `blue`, `green`, `pink`]);
 const MONTH_NAMES = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
+const AVAILABLE_FILTERS = new Set([`All`, `Overdue`, `Today`, `Favorites`, `Repeating`, `Tags`, `Archive`]);
 /**
  * Возвращает случайный элемент любого массивоподобного объекта.
  *
@@ -99,3 +100,10 @@ const getTaskData = () => ({
   isFavorite: getRandomFlag(),
   isArchive: getRandomFlag()
 });
+
+//  Создать экземпляр данных для фильтра
+const getFilter = (element, index = 0) => ({
+  title: Array.from(AVAILABLE_FILTERS)[index],
+  count: 0
+});
+
