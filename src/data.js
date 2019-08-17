@@ -1,8 +1,20 @@
+const TASK_DESCRIPTIONS = [`Изучить теорию`, `Сделать домашку`, `Пройти интенсив на соточку`];
 const MINUTES_IN_DAY = 60;
 const HOURS_IN_DAY = 24;
 const MILLISECONDS_IN_MINUTE = 1000 * 60;
 const MILLISECONDS_IN_HOUR = 1000 * 60 * 60;
 const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
+const AVAILABLE_DATA_PERIOD = {
+  past: -7,
+  future: 7
+};
+const TAGS_COUNT = {
+  min: 0,
+  max: 3
+};
+const AVAILABLE_TAGS = new Set([`homework`, `theory`, `practice`, `intensive`, `keks`, `flex`, `JS`]);
+const AVAILABLE_COLORS = new Set([`black`, `yellow`, `blue`, `green`, `pink`]);
+const MONTH_NAMES = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
 /**
  * Возвращает случайный элемент любого массивоподобного объекта.
  *
@@ -66,3 +78,24 @@ const getRandomSet = (set, minSize = 0, maxSize = 0) => {
   newSet.length = newSize;
   return new Set(newSet);
 };
+//  Создать экземпляр данных для задачи
+const getTaskData = () => ({
+  description: getIterableRandomElement(TASK_DESCRIPTIONS),
+  dueDate: getRandomData(AVAILABLE_DATA_PERIOD.past, AVAILABLE_DATA_PERIOD.future),
+  repeatingDays: {
+    'mo': getRandomFlag(),
+    'tu': getRandomFlag(),
+    'we': getRandomFlag(),
+    'th': getRandomFlag(),
+    'fr': getRandomFlag(),
+    'sa': getRandomFlag(),
+    'su': getRandomFlag()
+  },
+  get isRepeating() {
+    return Object.keys(this.repeatingDays).some((day) => this.repeatingDays[day]);
+  },
+  tags: getRandomSet(AVAILABLE_TAGS, TAGS_COUNT.min, TAGS_COUNT.max),
+  color: getIterableRandomElement(AVAILABLE_COLORS),
+  isFavorite: getRandomFlag(),
+  isArchive: getRandomFlag()
+});
