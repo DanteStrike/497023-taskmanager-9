@@ -16,6 +16,14 @@ const TASKS_PER_LOAD = 8;
 const hideElement = (element) => {
   element.style.display = `none`;
 };
+
+/**
+ * Зарендерить компонент на страницу.
+ *
+ * @param {object} node - родительский Node, вставляемого компонента.
+ * @param {string} markup - вставляемая разметка.
+ * @param {string} position - позиция вставки.
+ */
 const renderComponent = (node, markup, position = `beforeend`) => {
   node.insertAdjacentHTML(position, markup);
 };
