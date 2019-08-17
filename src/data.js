@@ -107,3 +107,13 @@ const getFilter = (element, index = 0) => ({
   count: 0
 });
 
+let tasksData = new Array(TASKS_COUNT)
+  .fill(``)
+  .map(getTaskData);
+
+let filtersData = new Array(AVAILABLE_FILTERS.size)
+  .fill(``)
+  .map(getFilter)
+  });
+
+export {tasksData, filtersData, MONTH_NAMES};
