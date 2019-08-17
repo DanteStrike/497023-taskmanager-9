@@ -6,7 +6,9 @@ import {createBoardFilter} from './components/board-filter.js';
 import {createTaskCard} from './components/task.js';
 import {createTaskEditForm} from './components/task-edit.js';
 import {createLoadMoreButton} from './components/load-more-button.js';
+import {tasksData} from './data.js';
 
+const TASKS_PER_LOAD = 8;
 const renderComponent = (node, markup, position = `beforeend`) => {
   node.insertAdjacentHTML(position, markup);
 };
@@ -26,5 +28,10 @@ renderComponent(board, createBoardFilter(), `afterbegin`);
 renderComponent(tasksBoard, createTaskEditForm(`yellow`));
 
 [`black`, `blue`, `yellow`].map((color) => renderComponent(tasksBoard, createTaskCard(color)));
+//  Рендер первого набора задач
+let editTaskData;
+let firstInitTaskData;
+[editTaskData, ...firstInitTaskData] = tasksData.slice(0, TASKS_PER_LOAD);
+renderComponent(tasksBoard, firstInitTaskData.map(createTaskCard).join(``));
 
 renderComponent(board, createLoadMoreButton());
