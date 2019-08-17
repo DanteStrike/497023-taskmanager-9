@@ -16,6 +16,8 @@ const AVAILABLE_TAGS = new Set([`homework`, `theory`, `practice`, `intensive`, `
 const AVAILABLE_COLORS = new Set([`black`, `yellow`, `blue`, `green`, `pink`]);
 const MONTH_NAMES = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
 const AVAILABLE_FILTERS = new Set([`All`, `Overdue`, `Today`, `Favorites`, `Repeating`, `Tags`, `Archive`]);
+const TASKS_COUNT = 23;
+
 /**
  * Возвращает случайный элемент любого массивоподобного объекта.
  *
@@ -79,6 +81,56 @@ const getRandomSet = (set, minSize = 0, maxSize = 0) => {
   newSet.length = newSize;
   return new Set(newSet);
 };
+
+/**
+ * Рассчитать кол-во задач, рассчитанных ранее, удовлетворяющих заданному фильтру.
+ *
+ * @param {object} filter - текущий фильтр.
+ * @param {object[]} tasks - список данных всех задач.
+ * @return {number} Число задач удовлетворяющих заданному фильтру.
+ */
+const calcFilterTasksCount = (filter, tasks) => {
+  let count = 0;
+
+  switch (filter.title) {
+    case `All`:
+      count = tasks.length;
+      break;
+
+    case `Overdue`:
+      let currentDate = Date.now();
+      //  Точность до минуты
+      tasks.forEach((task) => ((task.dueDate - currentDate) <= MILLISECONDS_IN_MINUTE) ? count++ : count);
+      break;
+
+    case `Today`:
+      let currentDay = new Date().getDate();
+      tasks.forEach((task) => (new Date(task.dueDate).getDate() === currentDay) ? count++ : count);
+      break;
+
+    case `Favorites`:
+      tasks.forEach((task) => (task.isFavorite) ? count++ : count);
+      break;
+
+    case `Repeating`:
+      tasks.forEach((task) => (task.isRepeating) ? count++ : count);
+      break;
+
+    case `Tags`:
+      tasks.forEach((task) => (task.tags.size > 0) ? count++ : count);
+      break;
+
+    case `Archive`:
+      tasks.forEach((task) => (task.isArchive) ? count++ : count);
+      break;
+
+    default:
+      break;
+  }
+
+  return count;
+};
+
 //  Создать экземпляр данных для задачи
 const getTaskData = () => ({
   description: getIterableRandomElement(TASK_DESCRIPTIONS),
@@ -114,6 +166,9 @@ let tasksData = new Array(TASKS_COUNT)
 let filtersData = new Array(AVAILABLE_FILTERS.size)
   .fill(``)
   .map(getFilter)
+  .map((filter) => {
+    filter.count = calcFilterTasksCount(filter, tasksData);
+    return filter;
   });
 
 export {tasksData, filtersData, MONTH_NAMES};
