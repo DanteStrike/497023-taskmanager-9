@@ -1,21 +1,22 @@
-export const createTaskEditForm = (color = `black`) =>
-  `<article class="card card--edit card--${color}">
+import {MONTH_NAMES} from '../data.js';
+
+export const createTaskEditForm = ({description, dueDate, repeatingDays, isRepeating, tags, color = `black`, isFavorite, isArchive}) =>
+  `<article class="card card--edit card--${color} ${isRepeating ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
-          <button type="button" class="card__btn card__btn--archive">
+          <button type="button" class="card__btn card__btn--archive ${isArchive ? `` : `card__btn--disabled`}">
             archive
           </button>
           <button
             type="button"
-            class="card__btn card__btn--favorites card__btn--disabled"
-          >
+            class="card__btn card__btn--favorites ${isFavorite ? `` : `card__btn--disabled`}">
             favorites
           </button>
         </div>
 
         <div class="card__color-bar">
-          <svg width="100%" height="10">
+          <svg class="card__color-bar-wave" width="100%" height="10">
             <use xlink:href="#wave"></use>
           </svg>
         </div>
@@ -26,7 +27,7 @@ export const createTaskEditForm = (color = `black`) =>
               class="card__text"
               placeholder="Start typing your text here..."
               name="text"
-            >This is example of new task, you can add picture, set date and time, add tags.</textarea>
+            >${description}</textarea>
           </label>
         </div>
 
@@ -34,25 +35,26 @@ export const createTaskEditForm = (color = `black`) =>
           <div class="card__details">
             <div class="card__dates">
               <button class="card__date-deadline-toggle" type="button">
-                date: <span class="card__date-status">no</span>
+                date: <span class="card__date-status">${(dueDate !== 0) ? `yes` : `no`}</span>
               </button>
 
-              <fieldset class="card__date-deadline" disabled>
+              <fieldset class="card__date-deadline" ${(dueDate !== 0) ? `` : `disabled`}>
                 <label class="card__input-deadline-wrap">
                   <input
                     class="card__date"
                     type="text"
                     placeholder="23 September"
                     name="date"
+                    value="${new Date(dueDate).getDate()} ${MONTH_NAMES[new Date(dueDate).getMonth()]} ${new Date(dueDate).getHours()}:${new Date(dueDate).getMinutes()}"
                   />
                 </label>
               </fieldset>
 
               <button class="card__repeat-toggle" type="button">
-                repeat:<span class="card__repeat-status">no</span>
+                repeat:<span class="card__repeat-status">${isRepeating ? `yes` : `no`}</span>
               </button>
 
-              <fieldset class="card__repeat-days" disabled>
+              <fieldset class="card__repeat-days" ${isRepeating ? `` : `disabled`}>
                 <div class="card__repeat-days-inner">
                   <input
                     class="visually-hidden card__repeat-day-input"
@@ -60,6 +62,7 @@ export const createTaskEditForm = (color = `black`) =>
                     id="repeat-mo-1"
                     name="repeat"
                     value="mo"
+                    ${repeatingDays.mo ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-mo-1"
                     >mo</label
@@ -70,7 +73,7 @@ export const createTaskEditForm = (color = `black`) =>
                     id="repeat-tu-1"
                     name="repeat"
                     value="tu"
-                    checked
+                    ${repeatingDays.tu ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-tu-1"
                     >tu</label
@@ -81,6 +84,7 @@ export const createTaskEditForm = (color = `black`) =>
                     id="repeat-we-1"
                     name="repeat"
                     value="we"
+                    ${repeatingDays.we ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-we-1"
                     >we</label
@@ -91,6 +95,7 @@ export const createTaskEditForm = (color = `black`) =>
                     id="repeat-th-1"
                     name="repeat"
                     value="th"
+                    ${repeatingDays.th ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-th-1"
                     >th</label
@@ -101,7 +106,7 @@ export const createTaskEditForm = (color = `black`) =>
                     id="repeat-fr-1"
                     name="repeat"
                     value="fr"
-                    checked
+                    ${repeatingDays.fr ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-fr-1"
                     >fr</label
@@ -112,6 +117,7 @@ export const createTaskEditForm = (color = `black`) =>
                     name="repeat"
                     value="sa"
                     id="repeat-sa-1"
+                    ${repeatingDays.sa ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-sa-1"
                     >sa</label
@@ -122,7 +128,7 @@ export const createTaskEditForm = (color = `black`) =>
                     id="repeat-su-1"
                     name="repeat"
                     value="su"
-                    checked
+                    ${repeatingDays.su ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-su-1"
                     >su</label
@@ -132,7 +138,22 @@ export const createTaskEditForm = (color = `black`) =>
             </div>
 
             <div class="card__hashtag">
-              <div class="card__hashtag-list"></div>
+              <div class="card__hashtag-list">
+                ${Array.from(tags).map((tag) => `<span class="card__hashtag-inner">
+                    <input
+                      type="hidden"
+                      name="hashtag"
+                      value="repeat"
+                      class="card__hashtag-hidden-input"
+                    />
+                    <p class="card__hashtag-name">
+                      #${tag}
+                    </p>
+                    <button type="button" class="card__hashtag-delete">
+                      delete
+                    </button>
+                  </span>`).join(``)}
+              </div>
 
               <label>
                 <input
@@ -154,7 +175,7 @@ export const createTaskEditForm = (color = `black`) =>
                 class="card__color-input card__color-input--black visually-hidden"
                 name="color"
                 value="black"
-                checked
+                ${(color === `black`) ? `checked` : ``}
               />
               <label
                 for="color-black-1"
@@ -167,6 +188,7 @@ export const createTaskEditForm = (color = `black`) =>
                 class="card__color-input card__color-input--yellow visually-hidden"
                 name="color"
                 value="yellow"
+                ${(color === `yellow`) ? `checked` : ``}
               />
               <label
                 for="color-yellow-1"
@@ -179,6 +201,7 @@ export const createTaskEditForm = (color = `black`) =>
                 class="card__color-input card__color-input--blue visually-hidden"
                 name="color"
                 value="blue"
+                ${(color === `blue`) ? `checked` : ``}
               />
               <label
                 for="color-blue-1"
@@ -191,6 +214,7 @@ export const createTaskEditForm = (color = `black`) =>
                 class="card__color-input card__color-input--green visually-hidden"
                 name="color"
                 value="green"
+                ${(color === `green`) ? `checked` : ``}
               />
               <label
                 for="color-green-1"
@@ -203,6 +227,7 @@ export const createTaskEditForm = (color = `black`) =>
                 class="card__color-input card__color-input--pink visually-hidden"
                 name="color"
                 value="pink"
+                ${(color === `pink`) ? `checked` : ``}
               />
               <label
                 for="color-pink-1"
@@ -219,4 +244,4 @@ export const createTaskEditForm = (color = `black`) =>
         </div>
       </div>
     </form>
-  </article>`;
+  </article>`.trim();
