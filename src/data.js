@@ -48,7 +48,7 @@ const tasksList = new Array(getRandomNumber(tasksConfig.minAmount, tasksConfig.m
 //  Создать экземпляр данных для фильтра
 const getFilter = (title, tasks) => ({
   title,
-  tasksAmount: calcTasksAmount(tasks)
+  tasksAmount: calcTasksAmount(title, tasks)
 });
 const filters = new Array(filtersData.titles.size)
   .fill(``)
