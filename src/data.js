@@ -14,7 +14,7 @@ const filtersData = {
 };
 
 const menuData = {
-  titles: [`+ Add new task`, `Tasks`, `Statistics`]
+  titles: new Set([`+ Add new task`, `Tasks`, `Statistics`])
 };
 
 
@@ -63,6 +63,6 @@ const getMenuItem = (title, index) => {
     isActive: (index === 1) ? true : false
   };
 };
-const menu =  Array.from(menuData.titles).map((title, index) => getMenuItem(title, index));
+const menu = Array.from(menuData.titles).map((title, index) => getMenuItem(title, index));
 
 export {tasksList, filters, menu};

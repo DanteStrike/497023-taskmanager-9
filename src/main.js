@@ -15,7 +15,7 @@ const mainNode = document.querySelector(`main`);
 const mainControl = mainNode.querySelector(`.control`);
 render(mainControl, new Menu(data.menu).getElement(), Position.BEFOREEND);
 render(mainNode, createElement(getSearchTemplate()), Position.BEFOREEND);
-render(mainNode, new Filters(data.filters), Position.BEFOREEND);
+render(mainNode, new Filters(data.filters).getElement(), Position.BEFOREEND);
 
 //  Рендер доски задач и его фильтров
 render(mainNode, createElement(createTasksBoard()), Position.BEFOREEND);
@@ -28,8 +28,12 @@ render(board, createElement(createBoardFilter()), Position.AFTERBEGIN);
 let firstTask;
 let overTasks;
 [firstTask, ...overTasks] = data.tasksList.slice(0, tasksConfig.perLoad);
-render(tasksBoard, new TaskEdit(firstTask), Position.BEFOREEND);
-render(tasksBoard, new Task(overTasks[1]), Position.BEFOREEND);
+render(tasksBoard, new TaskEdit(firstTask).getElement(), Position.BEFOREEND);
+render(tasksBoard, new Task(overTasks[1]).getElement(), Position.BEFOREEND);
+
+overTasks.forEach((task) => {
+  render(tasksBoard, new Task(task).getElement(), Position.BEFOREEND);
+})
 
 // //  Рендер кнопки загрузки
 // render(board, createLoadMoreButton());

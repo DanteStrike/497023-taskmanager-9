@@ -43,7 +43,7 @@ class Menu {
         ${(this._menuItems[2].isActive) ? `checked` : ``}
       />
       <label for="control__statistic" class="control__label"
-        >${this._menuItems[3].title.toUpperCase()}</label
+        >${this._menuItems[2].title.toUpperCase()}</label
       >
     </section>`;
   }

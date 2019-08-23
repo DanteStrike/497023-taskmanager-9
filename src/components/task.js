@@ -58,7 +58,7 @@ class Task {
               <div class="card__dates">
                 <div class="card__date-deadline">
                   <p class="card__input-deadline-wrap">
-                    <span class="card__date">${new Date(this._dueDate).getDate()} ${TimeValue.MONTH_NAMES[new Date(this._dueDate).getMonth()]}</span>
+                    <span class="card__date">${new Date(this._dueDate).getDate()} ${TimeValue.MONTHS_NAMES[new Date(this._dueDate).getMonth()]}</span>
                     <span class="card__time">${new Date(this._dueDate).getHours()}:${new Date(this._dueDate).getMinutes()}</span>
                   </p>
                 </div>
