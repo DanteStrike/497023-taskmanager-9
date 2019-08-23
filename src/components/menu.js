@@ -48,4 +48,6 @@ class Menu {
     </section>`;
   }
 }
+
+
 export default Menu;

@@ -47,4 +47,5 @@ const calcTasksAmount = (filterName, tasks) => {
   return count;
 };
 
+
 export default calcTasksAmount;

@@ -1,5 +1,6 @@
 import {TimeValue, createElement} from '../utils/utils.js';
 
+
 class Task {
   constructor({description, dueDate, repeatingDays, tags, color = `black`, isFavorite, isArchive}) {
     this._description = description;
@@ -80,5 +81,6 @@ class Task {
     </article>`.trim();
   }
 }
+
 
 export default Task;

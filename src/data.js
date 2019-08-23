@@ -45,6 +45,7 @@ const tasksList = new Array(getRandomNumber(tasksConfig.minAmount, tasksConfig.m
   .fill(``)
   .map(() => getTask(tasksData, taskConfig));
 
+
 //  Создать экземпляр данных для фильтра
 const getFilter = (title, tasks) => ({
   title,
@@ -57,6 +58,7 @@ const filters = new Array(filtersData.titles.size)
     return getFilter(title, tasksList);
   });
 
+
 const getMenuItem = (title, index) => {
   return {
     title,
@@ -64,5 +66,6 @@ const getMenuItem = (title, index) => {
   };
 };
 const menu = Array.from(menuData.titles).map((title, index) => getMenuItem(title, index));
+
 
 export {tasksList, filters, menu};
