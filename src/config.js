@@ -3,7 +3,7 @@ export const taskConfig = {
     past: -7,
     future: 7
   },
-  tagsAmount: {
+  tags: {
     minAmount: 0,
     maxAmount: 3
   }
@@ -11,6 +11,6 @@ export const taskConfig = {
 
 export const tasksConfig = {
   perLoad: 8,
-  minAmount: 30,
-  maxAmount: 20
+  minAmount: 20,
+  maxAmount: 30
 };

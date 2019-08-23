@@ -14,14 +14,14 @@ const filtersData = {
 };
 
 const menuData = {
-  titles: new Set([`+ Add new task`, `Tasks`, `Statistics`])
+  titles: [`+ Add new task`, `Tasks`, `Statistics`]
 };
 
 
 //  Создать экземпляр данных для задачи
 const getTask = (data, config) => ({
-  description: getRandomElement(data.description),
-  dueDate: getRandomData(config.past, config.future),
+  description: getRandomElement(data.descriptions),
+  dueDate: getRandomData(config.dataPeriod.past, config.dataPeriod.future),
   repeatingDays: {
     'mo': getRandomFlag(),
     'tu': getRandomFlag(),
@@ -43,27 +43,26 @@ const getTask = (data, config) => ({
 });
 const tasksList = new Array(getRandomNumber(tasksConfig.minAmount, tasksConfig.maxAmount))
   .fill(``)
-  .map(getTask(tasksData, taskConfig));
+  .map(() => getTask(tasksData, taskConfig));
 
 //  Создать экземпляр данных для фильтра
-const getFilter = (title, index, tasks) => ({
+const getFilter = (title, tasks) => ({
   title,
-  count: calcTasksAmount(tasks),
-  isActive: (index === 0) ? true : false
+  tasksAmount: calcTasksAmount(tasks)
 });
 const filters = new Array(filtersData.titles.size)
   .fill(``)
   .map((element, index) => {
     const title = Array.from(filtersData.titles)[index];
-    return getFilter(title, index, tasksList);
+    return getFilter(title, tasksList);
   });
 
 const getMenuItem = (title, index) => {
   return {
     title,
-    isActive: (index === 0) ? true : false
+    isActive: (index === 1) ? true : false
   };
 };
-const menu = menuData.titles.map((title, index) => getMenuItem(title, index));
+const menu =  Array.from(menuData.titles).map((title, index) => getMenuItem(title, index));
 
 export {tasksList, filters, menu};
