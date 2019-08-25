@@ -2,7 +2,7 @@ import * as data from './data.js';
 import {Position, createElement, render} from './utils/utils.js';
 import Menu from './components/menu.js';
 import Filters from './components/filters.js';
-import {initTasksBoard} from './initialization.js';
+import {firstInit, initTasksBoard} from './initialization.js';
 import {getSearchTemplate} from './components/search.js';
 import {createTasksBoard} from './components/tasks-board.js';
 
@@ -17,6 +17,11 @@ render(mainNode, new Filters(data.filters).getElement(), Position.BEFOREEND);
 //  Рендер доски задач и его фильтров
 render(mainNode, createElement(createTasksBoard()), Position.BEFOREEND);
 
-const board = mainNode.querySelector(`.board`);
-initTasksBoard(board);
+const boardNode = mainNode.querySelector(`.board`);
+if (data.tasksList.length === 0) {
+  firstInit(boardNode);
+} else {
+  initTasksBoard(boardNode);
+}
+
 
