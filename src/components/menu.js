@@ -1,18 +1,11 @@
-import {createElement} from '../utils/utils.js';
+import AbstractComponent from './abstract.js';
 
 
-class Menu {
+class Menu extends AbstractComponent {
   constructor(menuItems) {
+    super();
     this._menuItems = menuItems;
     this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
   }
 
   _getTemplate() {

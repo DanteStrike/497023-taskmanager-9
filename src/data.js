@@ -19,7 +19,8 @@ const menuData = {
 
 
 //  Создать экземпляр данных для задачи
-const getTask = (data, config) => ({
+const getTask = (data, config, index) => ({
+  id: index,
   description: getRandomElement(data.descriptions),
   dueDate: getRandomData(config.dataPeriod.past, config.dataPeriod.future),
   repeatingDays: {
@@ -36,14 +37,10 @@ const getTask = (data, config) => ({
   color: getRandomElement(data.colors),
   isFavorite: getRandomFlag(),
   isArchive: getRandomFlag(),
-
-  get isRepeating() {
-    return Object.keys(this.repeatingDays).some((day) => this.repeatingDays[day]);
-  }
 });
 const tasksList = new Array(getRandomNumber(tasksConfig.minAmount, tasksConfig.maxAmount))
   .fill(``)
-  .map(() => getTask(tasksData, taskConfig));
+  .map((element, index) => getTask(tasksData, taskConfig, index));
 
 
 //  Создать экземпляр данных для фильтра
