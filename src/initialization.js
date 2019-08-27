@@ -5,7 +5,12 @@ import Task from './components/task.js';
 import TaskEdit from './components/task-edit.js';
 import {createBoardFilter} from './components/board-filter.js';
 import {createLoadMoreButton} from './components/load-more-button.js';
+import {createNoTasks} from './components/no-tasks.js';
 
+
+export const firstInit = (boardNode) => {
+  render(boardNode, createElement(createNoTasks()), Position.AFTERBEGIN);
+};
 
 export const initTasksBoard = (boardNode) => {
   const tasksBoardNode = boardNode.querySelector(`.board__tasks`);
@@ -14,18 +19,40 @@ export const initTasksBoard = (boardNode) => {
 
   const renderTask = (task) => {
     const newTask = new Task(task);
-    const newTaskEdit = new TaskEdit(task);
 
-    const onTaskBtnEditClick = () => tasksBoardNode.replaceChild(newTaskEdit.getElement(), newTask.getElement());
+
+    const onTaskBtnEditClick = () => {
+      const newTaskEdit = new TaskEdit(task);
+      tasksBoardNode.replaceChild(newTaskEdit.getElement(), newTask.getElement());
+
+      const onEscKeyDown = (evt) => {
+        if (evt.key === `Esc` || evt.key === `Escape`) {
+          tasksBoardNode.replaceChild(newTask.getElement(), newTaskEdit.getElement());
+          document.removeEventListener(`keydown`, onEscKeyDown);
+        }
+      };
+      document.addEventListener(`keydown`, onEscKeyDown);
+
+      const onTaskEditFormSubmit = (evt) => {
+        evt.preventDefault();
+        tasksBoardNode.replaceChild(newTask.getElement(), newTaskEdit.getElement());
+      };
+      newTaskEdit.getElement().querySelector(`form`)
+        .addEventListener(`submit`, onTaskEditFormSubmit);
+
+
+      const onTaskEditTextFocus = () => document.removeEventListener(`keydown`, onEscKeyDown);
+      newTaskEdit.getElement().querySelector(`.card__text`)
+        .addEventListener(`focus`, onTaskEditTextFocus);
+
+
+      const onTaskEditTextBlur = () => document.addEventListener(`keydown`, onEscKeyDown);
+      newTaskEdit.getElement().querySelector(`.card__text`)
+        .addEventListener(`blur`, onTaskEditTextBlur);
+    };
     newTask.getElement().querySelector(`.card__btn--edit`)
       .addEventListener(`click`, onTaskBtnEditClick);
 
-    const onTaskEditFormSubmit = (evt) => {
-      evt.preventDefault();
-      tasksBoardNode.replaceChild(newTask.getElement(), newTaskEdit.getElement());
-    };
-    newTaskEdit.getElement().querySelector(`form`)
-      .addEventListener(`submit`, onTaskEditFormSubmit);
 
     render(tasksBoardNode, newTask.getElement(), Position.BEFOREEND);
   };

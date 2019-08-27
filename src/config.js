@@ -11,6 +11,6 @@ export const taskConfig = {
 
 export const tasksConfig = {
   perLoad: 8,
-  minAmount: 20,
-  maxAmount: 30
+  minAmount: 0,
+  maxAmount: 10
 };
