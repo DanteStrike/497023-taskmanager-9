@@ -1,28 +1,19 @@
-import {TimeValue, createElement} from '../utils/utils.js';
+import AbstractComponent from './abstract.js';
+import {TimeValue} from '../utils/utils.js';
 
 
-class TaskEdit {
+class TaskEdit extends AbstractComponent {
   constructor({description, dueDate, repeatingDays, tags, color = `black`, isFavorite, isArchive}) {
+    super();
     this._description = description;
     this._dueDate = dueDate;
     this._repeatingDays = repeatingDays;
+    this._isRepeating = Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]);
     this._tags = tags;
     this._color = color;
     this._isFavorite = isFavorite;
     this._isArchive = isArchive;
     this._element = null;
-  }
-
-  get _isRepeating() {
-    return Object.keys(this._repeatingDays).some((day) => this._repeatingDays[day]);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
   }
 
   _getTemplate() {

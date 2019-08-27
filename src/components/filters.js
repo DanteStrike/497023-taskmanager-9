@@ -1,18 +1,11 @@
-import {createElement} from '../utils/utils.js';
+import AbstractComponent from './abstract.js';
 
 
-class Filters {
+class Filters extends AbstractComponent {
   constructor(filters) {
+    super();
     this._filters = filters;
     this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
   }
 
   _getTemplate() {
