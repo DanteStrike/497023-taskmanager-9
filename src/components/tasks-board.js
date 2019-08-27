@@ -7,10 +7,7 @@ class TasksBoard extends AbstractComponent {
   }
 
   _getTemplate() {
-    return `<section class="board container">
-              <div class="board__tasks">
-              </div>
-            <section>`;
+    return `<section class="board container"></section>`;
   }
 }
 
