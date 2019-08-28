@@ -1,7 +1,7 @@
 import AbstractComponent from './abstract.js';
 
 
-class Sort extends AbstractComponent {
+class BoardFilter extends AbstractComponent {
   constructor() {
     super();
   }
@@ -16,4 +16,4 @@ class Sort extends AbstractComponent {
 }
 
 
-export default Sort;
+export default BoardFilter;
