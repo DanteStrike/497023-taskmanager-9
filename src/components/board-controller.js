@@ -3,10 +3,9 @@ import {tasksConfig} from '../config.js';
 import NoTasks from './no-tasks.js';
 import TasksBoard from './tasks-board.js';
 import BoardFilter from './board-filter.js';
-import Task from './task.js';
-import TaskEdit from './task-edit.js';
 import LoadMoreBtn from './load-more-button.js';
 import TasksList from './tasks-list.js';
+import TaskController from './task-controller.js';
 
 
 class BoardController {
@@ -18,6 +17,10 @@ class BoardController {
     this._sort = new BoardFilter();
     this._loadMoreBtn = new LoadMoreBtn();
     this._renderedTasksAmount = null;
+
+    this._subscriptions = [];
+    this._onChangeView = this._onChangeView.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   init() {
@@ -52,45 +55,21 @@ class BoardController {
   }
 
   _renderTask(task) {
-    const newTask = new Task(task);
+    const newTaskController = new TaskController(this._tasksList, task, this._onChangeView, this._onDataChange);
 
-    const onTaskBtnEditClick = () => {
-      const newTaskEdit = new TaskEdit(task);
-      this._tasksList.getElement().replaceChild(newTaskEdit.getElement(), newTask.getElement());
-
-      const onEscKeyDown = (evt) => {
-        if (evt.key === `Esc` || evt.key === `Escape`) {
-          this._tasksList.getElement().replaceChild(newTask.getElement(), newTaskEdit.getElement());
-          document.removeEventListener(`keydown`, onEscKeyDown);
-        }
-      };
-      document.addEventListener(`keydown`, onEscKeyDown);
-
-      const onTaskEditFormSubmit = (evt) => {
-        evt.preventDefault();
-        this._tasksList.getElement().replaceChild(newTask.getElement(), newTaskEdit.getElement());
-      };
-      newTaskEdit.getElement().querySelector(`form`)
-        .addEventListener(`submit`, onTaskEditFormSubmit);
-
-
-      const onTaskEditTextFocus = () => document.removeEventListener(`keydown`, onEscKeyDown);
-      newTaskEdit.getElement().querySelector(`.card__text`)
-        .addEventListener(`focus`, onTaskEditTextFocus);
-
-
-      const onTaskEditTextBlur = () => document.addEventListener(`keydown`, onEscKeyDown);
-      newTaskEdit.getElement().querySelector(`.card__text`)
-        .addEventListener(`blur`, onTaskEditTextBlur);
-    };
-    newTask.getElement().querySelector(`.card__btn--edit`)
-      .addEventListener(`click`, onTaskBtnEditClick);
-
-
-    render(this._tasksList.getElement(), newTask.getElement(), Position.BEFOREEND);
+    this._subscriptions.push(newTaskController.setDefaultView.bind(newTaskController));
   }
 
-  //  Сортировка module5-task2
+  _onChangeView() {
+    this._subscriptions.forEach((it) => it());
+  }
+
+  _onDataChange(newData, oldData) {
+    this._tasks[this._tasks.findIndex((it) => it === oldData)] = newData;
+
+    this._renderBoard(this._tasks);
+  }
+
   _onSortLinkClick(evt) {
     evt.preventDefault();
 
