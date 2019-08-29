@@ -2,7 +2,7 @@ import {Position, render, hideElement} from '../utils/utils.js';
 import {tasksConfig} from '../config.js';
 import NoTasks from './no-tasks.js';
 import TasksBoard from './tasks-board.js';
-import Sort from './board-filter.js';
+import BoardFilter from './board-filter.js';
 import Task from './task.js';
 import TaskEdit from './task-edit.js';
 import LoadMoreBtn from './load-more-button.js';
@@ -15,7 +15,7 @@ class BoardController {
     this._tasks = tasks;
     this._board = new TasksBoard();
     this._tasksList = new TasksList();
-    this._sort = new Sort();
+    this._sort = new BoardFilter();
     this._loadMoreBtn = new LoadMoreBtn();
     this._renderedTasksAmount = null;
   }
@@ -90,6 +90,7 @@ class BoardController {
     render(this._tasksList.getElement(), newTask.getElement(), Position.BEFOREEND);
   }
 
+  //  Сортировка module5-task2
   _onSortLinkClick(evt) {
     evt.preventDefault();
 
