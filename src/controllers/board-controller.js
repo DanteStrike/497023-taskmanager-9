@@ -72,6 +72,10 @@ class BoardController {
       return;
     }
 
+    // Закрыть все карточки и убрать обработчики нажатия кнопки ESC
+    this._onChangeView();
+    // Обнулить всех "подписчиков", не допускать утечку памяти
+    this._subscriptions = [];
     this._tasksList.getElement().innerHTML = ``;
 
     switch (evt.target.dataset.sortType) {
