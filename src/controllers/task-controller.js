@@ -28,7 +28,7 @@ class TaskController {
       .addEventListener(`click`, (evt) => this._onTaskBtnFavoritesClick(evt));
   }
 
-  //  Обновить данные текущей карточки полносью или частично
+  //  Обновить данные текущей карточки полностью или частично
   _updateTaskData(data) {
     let newData = Object.assign({}, this._data);
     for (const key in data) {
@@ -50,7 +50,9 @@ class TaskController {
 
     const onEscKeyDown = (evt) => {
       if (evt.key === `Esc` || evt.key === `Escape`) {
-        this._tasksList.getElement().replaceChild(this._taskView.getElement(), this._taskEdit.getElement());
+        if (this._tasksList.getElement().contains(this._taskEdit.getElement())) {
+          this._tasksList.getElement().replaceChild(this._taskView.getElement(), this._taskEdit.getElement());
+        }
         document.removeEventListener(`keydown`, onEscKeyDown);
         this._taskEdit = null;
       }
