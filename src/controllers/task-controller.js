@@ -28,6 +28,7 @@ class TaskController {
       .addEventListener(`click`, (evt) => this._onTaskBtnFavoritesClick(evt));
   }
 
+  //  Обновить данные текущей карточки полносью или частично
   _updateTaskData(data) {
     let newData = Object.assign({}, this._data);
     for (const key in data) {
@@ -35,6 +36,8 @@ class TaskController {
         newData[key] = data[key];
       }
     }
+
+    //  Обновить данные в коллекции карточек "доски"
     this._onDataChange(this._data, newData);
     this._data = newData;
   }
@@ -84,6 +87,7 @@ class TaskController {
         color: formData.get(`color`)
       };
 
+      // Перерисовать только текущую карточку путем создания нового TaskView и подмены replaceChild. Не требуется перерисовывать всю "доску".
       this._updateTaskData(entry);
       this._createNewTaskView();
 
@@ -95,7 +99,7 @@ class TaskController {
     this._taskEdit.getElement().querySelector(`form`)
       .addEventListener(`submit`, onTaskEditFormSubmit);
 
-
+    //  ESC не должен прерывать ввод текстовых данных в форме редактирования
     const onTaskEditTextFocus = () => document.removeEventListener(`keydown`, onEscKeyDown);
     this._taskEdit.getElement().querySelector(`.card__text`)
       .addEventListener(`focus`, onTaskEditTextFocus);
