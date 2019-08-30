@@ -1,10 +1,10 @@
 import {Position, render, hideElement} from '../utils/utils.js';
 import {tasksConfig} from '../config.js';
-import NoTasks from './no-tasks.js';
-import TasksBoard from './tasks-board.js';
-import BoardFilter from './board-filter.js';
-import LoadMoreBtn from './load-more-button.js';
-import TasksList from './tasks-list.js';
+import NoTasks from '../components/no-tasks.js';
+import TasksBoard from '../components/tasks-board.js';
+import BoardFilter from '../components/board-filter.js';
+import LoadMoreBtn from '../components/load-more-button.js';
+import TasksList from '../components/tasks-list.js';
 import TaskController from './task-controller.js';
 
 
@@ -15,6 +15,7 @@ class BoardController {
     this._board = new TasksBoard();
     this._tasksList = new TasksList();
     this._sort = new BoardFilter();
+    this._noTasks = new NoTasks();
     this._loadMoreBtn = new LoadMoreBtn();
     this._renderedTasksAmount = null;
 
@@ -27,7 +28,7 @@ class BoardController {
     render(this._container, this._board.getElement(), Position.BEFOREEND);
 
     if (this._tasks.length === 0) {
-      this._firstInit();
+      render(this._board.getElement(), this._noTasks.getElement(), Position.BEFOREEND);
       return;
     }
 
@@ -50,10 +51,6 @@ class BoardController {
     this._loadMoreBtn.getElement().addEventListener(`click`, () => this._onLoadButtonClick());
   }
 
-  _firstInit() {
-    render(this._board.getElement(), new NoTasks().getElement(), Position.BEFOREEND);
-  }
-
   _renderTask(task) {
     const newTaskController = new TaskController(this._tasksList, task, this._onChangeView, this._onDataChange);
 
@@ -61,13 +58,11 @@ class BoardController {
   }
 
   _onChangeView() {
-    this._subscriptions.forEach((it) => it());
+    this._subscriptions.forEach((sub) => sub());
   }
 
-  _onDataChange(newData, oldData) {
-    this._tasks[this._tasks.findIndex((it) => it === oldData)] = newData;
-
-    this._renderBoard(this._tasks);
+  _onDataChange(oldData, newData) {
+    this._tasks[this._tasks.findIndex((task) => task === oldData)] = newData;
   }
 
   _onSortLinkClick(evt) {

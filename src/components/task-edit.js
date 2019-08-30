@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract.js';
-import {TimeValue} from '../utils/utils.js';
+import {TimeValue, render, unrender, Position, createElement} from '../utils/utils.js';
 
 
 class TaskEdit extends AbstractComponent {
@@ -14,6 +14,125 @@ class TaskEdit extends AbstractComponent {
     this._isFavorite = isFavorite;
     this._isArchive = isArchive;
     this._element = null;
+
+    this._hangHandlers();
+  }
+
+  _hangHandlers() {
+    this.getElement().querySelector(`.card__date-deadline-toggle`)
+      .addEventListener(`click`, (evt) => this._onCardDateToggleClick(evt));
+    this.getElement().querySelector(`.card__repeat-toggle`)
+      .addEventListener(`click`, (evt) => this._onCardRepeatToggleClick(evt));
+    this.getElement().querySelector(`.card__colors-wrap`)
+      .addEventListener(`click`, (evt) => this._onCardColorClick(evt));
+    this.getElement().querySelector(`.card__hashtag-input`)
+      .addEventListener(`focus`, (evt) => this._onCardHashtagInputFocus(evt));
+    this.getElement().querySelector(`.card__hashtag-list`)
+      .addEventListener(`click`, (evt) => this._onCardHashtagListClick(evt));
+  }
+
+  _onCardDateToggleClick(evt) {
+    const cardDateToggle = evt.currentTarget;
+    const cardDateStatus = cardDateToggle.querySelector(`span`);
+    const cardDateWrap = this.getElement().querySelector(`.card__date-deadline`);
+    const cardDateInput = cardDateWrap.querySelector(`input`);
+
+    if (cardDateStatus.textContent === `yes`) {
+      cardDateStatus.textContent = `no`;
+      cardDateInput.value = ``;
+    } else {
+      cardDateStatus.textContent = `yes`;
+    }
+
+    cardDateWrap.disabled = !cardDateWrap.disabled;
+  }
+
+  _onCardRepeatToggleClick(evt) {
+    const cardRepeatToggle = evt.currentTarget;
+    const cardRepeatStatus = cardRepeatToggle.querySelector(`span`);
+    const card = this.getElement();
+    const cardRepeatWrap = this.getElement().querySelector(`.card__repeat-days`);
+    const cardRepeatInputs = cardRepeatWrap.querySelectorAll(`input`);
+
+    if (cardRepeatStatus.textContent === `yes`) {
+      cardRepeatStatus.textContent = `no`;
+      cardRepeatInputs.forEach((input) => {
+        input.checked = false;
+      });
+    } else {
+      cardRepeatStatus.textContent = `yes`;
+    }
+
+    card.classList.toggle(`card--repeat`);
+    cardRepeatWrap.disabled = !cardRepeatWrap.disabled;
+  }
+
+  _onCardColorClick(evt) {
+    const target = evt.target;
+    const card = this.getElement();
+
+    if (target.tagName !== `INPUT`) {
+      return;
+    }
+
+    card.classList.remove(`card--${this._color}`);
+    this._color = target.value;
+    card.classList.add(`card--${this._color}`);
+  }
+
+  _onCardHashtagInputFocus(evt) {
+    const cardHashtagInput = evt.currentTarget;
+    const cardHashTagList = this.getElement().querySelector(`.card__hashtag-list`);
+
+    const onEnterKeyDown = (e) => {
+      if (e.key === `Enter`) {
+        e.preventDefault();
+        const newTag = cardHashtagInput.value.trim();
+
+        if (newTag !== `` && !this._tags.has(newTag)) {
+          this._tags.add(newTag);
+          render(cardHashTagList, createElement(this._getHashTagTemplate(newTag)), Position.BEFOREEND);
+        }
+
+        cardHashtagInput.value = ``;
+      }
+    };
+
+    const onCardHashtagInputBlur = () => {
+      document.removeEventListener(`keydown`, onEnterKeyDown);
+    };
+
+    document.addEventListener(`keydown`, onEnterKeyDown);
+    cardHashtagInput.addEventListener(`blur`, onCardHashtagInputBlur);
+  }
+
+  _onCardHashtagListClick(evt) {
+    const target = evt.target;
+
+    if (target.tagName !== `BUTTON`) {
+      return;
+    }
+
+    const oldTag = target.parentNode.querySelector(`input`).value;
+    this._tags.delete(oldTag);
+    unrender(target.parentNode);
+  }
+
+  _getHashTagTemplate(tag) {
+    return `<span class="card__hashtag-inner">
+      <input
+        type="hidden"
+        name="hashtag"
+        value="${tag}"
+        class="card__hashtag-hidden-input"
+      />
+      <p class="card__hashtag-name">
+        #${tag}
+      </p>
+      <button type="button" class="card__hashtag-delete">
+        delete
+      </button>
+    </span>`;
   }
 
   _getTemplate() {
@@ -59,9 +178,9 @@ class TaskEdit extends AbstractComponent {
                     <input
                       class="card__date"
                       type="text"
-                      placeholder="23 September"
+                      placeholder="${new Date(Date.now())}"
                       name="date"
-                      value="${new Date(this._dueDate).getDate()} ${TimeValue.MONTHS_NAMES[new Date(this._dueDate).getMonth()]} ${new Date(this._dueDate).getHours()}:${new Date(this._dueDate).getMinutes()}"
+                      value="${new Date(this._dueDate).getDate()} ${TimeValue.MONTHS_NAMES[new Date(this._dueDate).getMonth()]} ${new Date(this._dueDate).getHours()}:${new Date(this._dueDate).getMinutes()} ${new Date(this._dueDate).getFullYear()}"
                     />
                   </label>
                 </fieldset>
@@ -155,20 +274,7 @@ class TaskEdit extends AbstractComponent {
 
               <div class="card__hashtag">
                 <div class="card__hashtag-list">
-                  ${Array.from(this._tags).map((tag) => `<span class="card__hashtag-inner">
-                      <input
-                        type="hidden"
-                        name="hashtag"
-                        value="repeat"
-                        class="card__hashtag-hidden-input"
-                      />
-                      <p class="card__hashtag-name">
-                        #${tag}
-                      </p>
-                      <button type="button" class="card__hashtag-delete">
-                        delete
-                      </button>
-                    </span>`).join(``)}
+                  ${Array.from(this._tags).map((tag) => this._getHashTagTemplate(tag)).join(``)}
                 </div>
 
                 <label>

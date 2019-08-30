@@ -14,9 +14,9 @@ export const Position = {
   BEFOREEND: `beforeend`
 };
 
-export const Key = {
-  ESCAPE: new Set([`Escape`, `Esc`]),
-};
+// export const Key = {
+//   ESCAPE: new Set([`Escape`, `Esc`]),
+// };
 
 
 /**
@@ -97,6 +97,15 @@ export const createElement = (template) => {
  */
 export const hideElement = (element) => {
   element.style.display = `none`;
+};
+
+/**
+ * Показать DOM-элемент.
+ *
+ * @param {node} element - разметка.
+ */
+export const showElement = (element) => {
+  element.style.display = ``;
 };
 
 /**
