@@ -3,7 +3,7 @@ import {Position, render} from './utils/utils.js';
 import Menu from './components/menu.js';
 import Filters from './components/filters.js';
 import Search from './components/search.js';
-import BoardController from './components/board-controller.js';
+import BoardController from './controllers/board-controller.js';
 
 
 //  Рендер меню, поиска и его фильтров
