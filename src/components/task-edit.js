@@ -1,6 +1,10 @@
 import AbstractComponent from './abstract.js';
 import {TimeValue, render, unrender, Position, createElement} from '../utils/utils.js';
 
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
+
 
 class TaskEdit extends AbstractComponent {
   constructor({description, dueDate, repeatingDays, tags, color = `black`, isFavorite, isArchive}) {
@@ -15,7 +19,19 @@ class TaskEdit extends AbstractComponent {
     this._isArchive = isArchive;
     this._element = null;
 
+    this._initFlatpickr();
     this._hangHandlers();
+  }
+
+  _initFlatpickr() {
+    flatpickr(this.getElement().querySelector(`.card__date`), {
+      altInput: true,
+      allowInput: true,
+      altFormat: `j F G:i K`,
+      dateFormat: `Y-m-d H:i:S`,
+      enableTime: true,
+      defaultDate: this._dueDate ? this._dueDate : Date.now()
+    });
   }
 
   _hangHandlers() {
@@ -178,7 +194,7 @@ class TaskEdit extends AbstractComponent {
                     <input
                       class="card__date"
                       type="text"
-                      placeholder="${new Date(Date.now())}"
+                      placeholder="${new Date()}"
                       name="date"
                       value="${new Date(this._dueDate).getDate()} ${TimeValue.MONTHS_NAMES[new Date(this._dueDate).getMonth()]} ${new Date(this._dueDate).getHours()}:${new Date(this._dueDate).getMinutes()} ${new Date(this._dueDate).getFullYear()}"
                     />
