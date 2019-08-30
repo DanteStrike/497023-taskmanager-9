@@ -32,8 +32,8 @@ const getTask = (data, config, index) => ({
     'sa': getRandomFlag(),
     'su': getRandomFlag()
   },
-  tags: shuffle(data.tags)
-    .slice(0, getRandomNumber(config.tags.minAmount, config.tags.maxAmount)),
+  tags: new Set(shuffle(data.tags)
+    .slice(0, getRandomNumber(config.tags.minAmount, config.tags.maxAmount))),
   color: getRandomElement(data.colors),
   isFavorite: getRandomFlag(),
   isArchive: getRandomFlag(),
