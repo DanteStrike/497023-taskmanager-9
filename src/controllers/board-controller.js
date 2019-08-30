@@ -77,14 +77,14 @@ class BoardController {
     switch (evt.target.dataset.sortType) {
       case `date-up`:
         const sortedByDateUpTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
-        sortedByDateUpTasks.forEach((task) => this._renderTask(task));
+        sortedByDateUpTasks.slice(0, this._renderedTasksAmount).forEach((task) => this._renderTask(task));
         break;
       case `date-down`:
         const sortedByDateDownTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
-        sortedByDateDownTasks.forEach((task) => this._renderTask(task));
+        sortedByDateDownTasks.slice(0, this._renderedTasksAmount).forEach((task) => this._renderTask(task));
         break;
       case `default`:
-        this._tasks.forEach((task) => this._renderTask(task));
+        this._tasks.slice(0, this._renderedTasksAmount).forEach((task) => this._renderTask(task));
         break;
     }
   }
