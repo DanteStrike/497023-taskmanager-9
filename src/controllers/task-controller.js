@@ -48,16 +48,14 @@ class TaskController {
     this._tasksList.getElement().replaceChild(this._taskEdit.getElement(), this._taskView.getElement());
 
 
-    const onEscKeyDown = (evt) => {
+    this._onEscKeyDown = (evt) => {
       if (evt.key === `Esc` || evt.key === `Escape`) {
-        if (this._tasksList.getElement().contains(this._taskEdit.getElement())) {
-          this._tasksList.getElement().replaceChild(this._taskView.getElement(), this._taskEdit.getElement());
-        }
-        document.removeEventListener(`keydown`, onEscKeyDown);
+        this._tasksList.getElement().replaceChild(this._taskView.getElement(), this._taskEdit.getElement());
+        document.removeEventListener(`keydown`, this._onEscKeyDown);
         this._taskEdit = null;
       }
     };
-    document.addEventListener(`keydown`, onEscKeyDown);
+    document.addEventListener(`keydown`, this._onEscKeyDown);
 
 
     this._taskEdit.getElement().querySelector(`.card__btn--archive`)
@@ -96,20 +94,20 @@ class TaskController {
       this._tasksList.getElement().replaceChild(this._taskView.getElement(), this._taskEdit.getElement());
       this._taskEdit = null;
 
-      document.removeEventListener(`keydown`, onEscKeyDown);
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
     };
     this._taskEdit.getElement().querySelector(`form`)
       .addEventListener(`submit`, onTaskEditFormSubmit);
 
     //  ESC не должен прерывать ввод текстовых данных в форме редактирования
-    const onTaskEditTextFocus = () => document.removeEventListener(`keydown`, onEscKeyDown);
+    const onTaskEditTextFocus = () => document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._taskEdit.getElement().querySelector(`.card__text`)
       .addEventListener(`focus`, onTaskEditTextFocus);
     this._taskEdit.getElement().querySelector(`.card__hashtag-input`)
       .addEventListener(`focus`, onTaskEditTextFocus);
 
 
-    const onTaskEditTextBlur = () => document.addEventListener(`keydown`, onEscKeyDown);
+    const onTaskEditTextBlur = () => document.addEventListener(`keydown`, this._onEscKeyDown);
     this._taskEdit.getElement().querySelector(`.card__text`)
       .addEventListener(`blur`, onTaskEditTextBlur);
     this._taskEdit.getElement().querySelector(`.card__hashtag-input`)
@@ -145,6 +143,7 @@ class TaskController {
 
     if (this._tasksList.getElement().contains(this._taskEdit.getElement())) {
       this._tasksList.getElement().replaceChild(this._taskView.getElement(), this._taskEdit.getElement());
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
 }
