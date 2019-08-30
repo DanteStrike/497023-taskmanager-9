@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract.js';
-import {TimeValue} from '../utils/utils.js';
+import {TimeValue, getDateTimeAMPM} from '../utils/utils.js';
 
 
 class Task extends AbstractComponent {
@@ -51,7 +51,7 @@ class Task extends AbstractComponent {
                 <div class="card__date-deadline">
                   <p class="card__input-deadline-wrap">
                     <span class="card__date">${(this._dueDate) ? `${new Date(this._dueDate).getDate()} ${TimeValue.MONTHS_NAMES[new Date(this._dueDate).getMonth()]}` : `did not set!`}</span>
-                    <span class="card__time">${(this._dueDate) ? `${new Date(this._dueDate).getHours()}:${new Date(this._dueDate).getMinutes()}` : `did not set!`}</span>
+                    <span class="card__time">${(this._dueDate) ? `${getDateTimeAMPM(new Date(this._dueDate))}` : `did not set!`}</span>
                   </p>
                 </div>
               </div>

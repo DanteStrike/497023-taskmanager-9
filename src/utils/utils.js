@@ -137,3 +137,17 @@ export const unrender = (element) => {
   }
 };
 
+/**
+ * Отформатировать время в формат 12 часов (am/pm)
+ *
+ * @param {Date} date - объект времени.
+ * @return {string} - время в 12 часовом формате
+ */
+export const getDateTimeAMPM = (date) => {
+  const hours = (date.getHours() % 12) ? date.getHours() % 12 : 12;
+  const minutes = date.getMinutes();
+  const ampm = date.getHours() >= 12 ? `PM` : `AM`;
+  return `${(hours < 10) ? `0${hours}` : `${hours}`}:${(minutes < 10) ? `0${minutes}` : `${minutes}`} ${ampm}`;
+};
+
+
