@@ -1,12 +1,11 @@
 import {Position, render, hideElement} from '../utils/utils.js';
 import {tasksConfig} from '../config.js';
-import NoTasks from './no-tasks.js';
-import TasksBoard from './tasks-board.js';
-import BoardFilter from './board-filter.js';
-import Task from './task.js';
-import TaskEdit from './task-edit.js';
-import LoadMoreBtn from './load-more-button.js';
-import TasksList from './tasks-list.js';
+import NoTasks from '../components/no-tasks.js';
+import TasksBoard from '../components/tasks-board.js';
+import BoardFilter from '../components/board-filter.js';
+import LoadMoreBtn from '../components/load-more-button.js';
+import TasksList from '../components/tasks-list.js';
+import TaskController from './task-controller.js';
 
 
 class BoardController {
@@ -16,15 +15,20 @@ class BoardController {
     this._board = new TasksBoard();
     this._tasksList = new TasksList();
     this._sort = new BoardFilter();
+    this._noTasks = new NoTasks();
     this._loadMoreBtn = new LoadMoreBtn();
     this._renderedTasksAmount = null;
+
+    this._subscriptions = [];
+    this._onChangeView = this._onChangeView.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   init() {
     render(this._container, this._board.getElement(), Position.BEFOREEND);
 
     if (this._tasks.length === 0) {
-      this._firstInit();
+      render(this._board.getElement(), this._noTasks.getElement(), Position.BEFOREEND);
       return;
     }
 
@@ -47,50 +51,20 @@ class BoardController {
     this._loadMoreBtn.getElement().addEventListener(`click`, () => this._onLoadButtonClick());
   }
 
-  _firstInit() {
-    render(this._board.getElement(), new NoTasks().getElement(), Position.BEFOREEND);
-  }
-
   _renderTask(task) {
-    const newTask = new Task(task);
+    const newTaskController = new TaskController(this._tasksList, task, this._onChangeView, this._onDataChange);
 
-    const onTaskBtnEditClick = () => {
-      const newTaskEdit = new TaskEdit(task);
-      this._tasksList.getElement().replaceChild(newTaskEdit.getElement(), newTask.getElement());
-
-      const onEscKeyDown = (evt) => {
-        if (evt.key === `Esc` || evt.key === `Escape`) {
-          this._tasksList.getElement().replaceChild(newTask.getElement(), newTaskEdit.getElement());
-          document.removeEventListener(`keydown`, onEscKeyDown);
-        }
-      };
-      document.addEventListener(`keydown`, onEscKeyDown);
-
-      const onTaskEditFormSubmit = (evt) => {
-        evt.preventDefault();
-        this._tasksList.getElement().replaceChild(newTask.getElement(), newTaskEdit.getElement());
-      };
-      newTaskEdit.getElement().querySelector(`form`)
-        .addEventListener(`submit`, onTaskEditFormSubmit);
-
-
-      const onTaskEditTextFocus = () => document.removeEventListener(`keydown`, onEscKeyDown);
-      newTaskEdit.getElement().querySelector(`.card__text`)
-        .addEventListener(`focus`, onTaskEditTextFocus);
-
-
-      const onTaskEditTextBlur = () => document.addEventListener(`keydown`, onEscKeyDown);
-      newTaskEdit.getElement().querySelector(`.card__text`)
-        .addEventListener(`blur`, onTaskEditTextBlur);
-    };
-    newTask.getElement().querySelector(`.card__btn--edit`)
-      .addEventListener(`click`, onTaskBtnEditClick);
-
-
-    render(this._tasksList.getElement(), newTask.getElement(), Position.BEFOREEND);
+    this._subscriptions.push(newTaskController.setDefaultView.bind(newTaskController));
   }
 
-  //  Сортировка module5-task2
+  _onChangeView() {
+    this._subscriptions.forEach((sub) => sub());
+  }
+
+  _onDataChange(oldData, newData) {
+    this._tasks[this._tasks.findIndex((task) => task === oldData)] = newData;
+  }
+
   _onSortLinkClick(evt) {
     evt.preventDefault();
 
@@ -98,19 +72,23 @@ class BoardController {
       return;
     }
 
+    // Закрыть все карточки и убрать обработчики нажатия кнопки ESC
+    this._onChangeView();
+    // Обнулить всех "подписчиков", не допускать утечку памяти
+    this._subscriptions = [];
     this._tasksList.getElement().innerHTML = ``;
 
     switch (evt.target.dataset.sortType) {
       case `date-up`:
         const sortedByDateUpTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
-        sortedByDateUpTasks.forEach((task) => this._renderTask(task));
+        sortedByDateUpTasks.slice(0, this._renderedTasksAmount).forEach((task) => this._renderTask(task));
         break;
       case `date-down`:
         const sortedByDateDownTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
-        sortedByDateDownTasks.forEach((task) => this._renderTask(task));
+        sortedByDateDownTasks.slice(0, this._renderedTasksAmount).forEach((task) => this._renderTask(task));
         break;
       case `default`:
-        this._tasks.forEach((task) => this._renderTask(task));
+        this._tasks.slice(0, this._renderedTasksAmount).forEach((task) => this._renderTask(task));
         break;
     }
   }
