@@ -53,6 +53,7 @@ class BoardController {
 
   _renderTask(task) {
     const newTaskController = new TaskController(this._tasksList, task, this._onChangeView, this._onDataChange);
+    newTaskController.init();
 
     this._subscriptions.push(newTaskController.setDefaultView.bind(newTaskController));
   }

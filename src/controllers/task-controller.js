@@ -9,8 +9,6 @@ class TaskController {
     this._data = taskData;
     this._onChangeView = onChangeView;
     this._onDataChange = onDataChange;
-
-    this.init();
   }
 
   init() {
